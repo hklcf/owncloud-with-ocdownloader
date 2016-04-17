@@ -17,12 +17,6 @@ RUN apt-get update && apt-get install -y \
         libxml2-dev \
         && rm -rf /var/lib/apt/lists/*
 
-# keyserver fail randomly, trust owncloud.org
-# RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys E3036906AD9F30807351FAC32D5D5E97F6978A26
-RUN curl -fsSL -o /dev/shm/key.asc https://owncloud.org/owncloud.asc && \
-    gpg --import /dev/shm/key.asc && \
-    rm -rf /dev/shm/key.asc
-
 # https://doc.owncloud.org/server/8.1/admin_manual/installation/source_installation.html#prerequisites
 RUN docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
 	&& docker-php-ext-install gd exif intl mbstring mcrypt mysql opcache pdo_mysql pdo_pgsql pgsql zip
@@ -79,11 +73,10 @@ RUN curl -sSL https://yt-dl.org/latest/youtube-dl -o /usr/local/bin/youtube-dl &
 # Make not existing ./data/ for specified permission
 RUN mkdir /var/www/html/data && \
         useradd aria2 && \
-        chown aria2:aria2 /var/www/html/data && \
+        chown -R aria2:aria2 /var/www/html/data && \
         chmod 770 /var/www/html/data && \
-        usermod -aG aria2 www-data && \
-        usermod -aG www-data aria2
-
+        usermod -G aria2 www-data && \
+        usermod -G www-data aria2
 
 COPY docker-entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
