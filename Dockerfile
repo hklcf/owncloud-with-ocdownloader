@@ -73,7 +73,7 @@ RUN curl -sSL https://yt-dl.org/latest/youtube-dl -o /usr/local/bin/youtube-dl &
 # Make not existing ./data/ for specified permission
 RUN mkdir /var/www/html/data && \
         useradd aria2 && \
-        chown -R aria2:aria2 /var/www/html/data && \
+        #chown -R aria2:aria2 /var/www/html/data && \
         chmod 770 /var/www/html/data && \
         usermod -G aria2 www-data && \
         usermod -G www-data aria2
