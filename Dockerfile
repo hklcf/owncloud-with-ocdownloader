@@ -61,11 +61,11 @@ RUN curl -fsSL -o oc.zip \
         && mv /dev/shm/ocdownloader-master /usr/src/owncloud/apps/ocdownloader \
         && rm oc.zip
 
-RUN cd /var/www/html && tar cf - --one-file-system -C /usr/src/owncloud . | tar xf - && chown -R www-data:www-data .
-
 # Download latest youtube-dl binary, need python runtime
 RUN curl -sSL https://yt-dl.org/latest/youtube-dl -o /usr/local/bin/youtube-dl && \
         chmod a+rx /usr/local/bin/youtube-dl
+
+RUN cd /var/www/html && tar cf - --one-file-system -C /usr/src/owncloud . | tar xf - && chown -R www-data:www-data .
 
 # Add user aria2 and fix permission problem
 RUN useradd aria2 && \
