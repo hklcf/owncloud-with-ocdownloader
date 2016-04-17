@@ -67,16 +67,10 @@ RUN cd /var/www/html && tar cf - --one-file-system -C /usr/src/owncloud . | tar 
 RUN curl -sSL https://yt-dl.org/latest/youtube-dl -o /usr/local/bin/youtube-dl && \
         chmod a+rx /usr/local/bin/youtube-dl
 
-# BAD Hotfix: give www-data permission to login
-# RUN usermod -s /bin/sh www-data
-
-# Make not existing ./data/ for specified permission
-#RUN mkdir /var/www/html/data && \
-        RUN useradd aria2 && \
-        #chown -R aria2:aria2 /var/www/html/data && \
-#        chmod 770 /var/www/html/data && \
-        usermod -G aria2 www-data && \
-        usermod -G www-data aria2
+# Add user aria2 and fix permission problem
+RUN useradd aria2 && \
+	usermod -G aria2 www-data && \
+	usermod -G www-data aria2
 
 COPY docker-entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
