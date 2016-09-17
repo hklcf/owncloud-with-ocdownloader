@@ -38,7 +38,7 @@ RUN pecl install APCu-4.0.10 redis memcached \
 
 RUN a2enmod rewrite
 
-ENV OWNCLOUD_VERSION 9.0.1
+ENV OWNCLOUD_VERSION 9.1.0
 
 RUN curl -fsSL -o owncloud.tar.bz2 \
 		"https://download.owncloud.org/community/owncloud-${OWNCLOUD_VERSION}.tar.bz2" \
