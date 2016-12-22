@@ -19,7 +19,8 @@ RUN apt-get update && apt-get install -y \
 
 # https://doc.owncloud.org/server/latest/admin_manual/installation/source_installation.html
 RUN docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
-	&& docker-php-ext-install ctype dom iconv json libxml posix simplexml xmlwriter zip zlib sqlite pdo_mysql pgsql curl fileinfo bz2 intl mcrypt openssl exif mbstring opcache
+	&& docker-php-ext-install gd exif intl mbstring mcrypt mysql opcache pdo_mysql pdo_pgsql pgsql zip pcntl
+#	&& docker-php-ext-install ctype gd dom iconv json libxml posix simplexml xmlwriter zip zlib sqlite pdo_mysql pgsql curl fileinfo bz2 intl mcrypt openssl exif mbstring opcache && docker-php-ext-install ctype dom iconv json libxml posix simplexml xmlwriter zip zlib sqlite pdo_mysql pgsql curl fileinfo bz2 intl mcrypt openssl exif mbstring opcache pcntl
 
 # set recommended PHP.ini settings
 # see https://secure.php.net/manual/en/opcache.installation.php
@@ -45,12 +46,12 @@ RUN curl -fsSL -o owncloud.tar.bz2 \
 	&& curl -fsSL -o owncloud.tar.bz2.asc \
 		"https://download.owncloud.org/community/owncloud-${OWNCLOUD_VERSION}.tar.bz2.asc" \
 	&& export GNUPGHOME="$(mktemp -d)" \
-# gpg key from https://owncloud.org/owncloud.asc
 	&& gpg --keyserver ha.pool.sks-keyservers.net --recv-keys E3036906AD9F30807351FAC32D5D5E97F6978A26 \
 	&& gpg --batch --verify owncloud.tar.bz2.asc owncloud.tar.bz2 \
 	&& rm -r "$GNUPGHOME" owncloud.tar.bz2.asc \
 	&& tar -xjf owncloud.tar.bz2 -C /usr/src/ \
 	&& rm owncloud.tar.bz2
+# gpg key from https://owncloud.org/owncloud.asc
 
 # Rename dirctory to appid & enable ocdownloader by default
 RUN curl -fsSL -o oc.zip \
