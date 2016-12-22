@@ -15,6 +15,8 @@ RUN apt-get update && apt-get install -y \
         libpng12-dev \
         libpq-dev \
         libxml2-dev \
+	sqlite3 \
+	libsqlite3-dev \
         && rm -rf /var/lib/apt/lists/*
 
 # https://doc.owncloud.org/server/latest/admin_manual/installation/source_installation.html
