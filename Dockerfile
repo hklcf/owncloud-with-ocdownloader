@@ -5,7 +5,6 @@ RUN apt-get update && apt-get install -y \
         unzip \
         python \
         bzip2 \
-	bzip2-devel \
         libcurl4-openssl-dev \
         libfreetype6-dev \
         libicu-dev \
@@ -17,6 +16,7 @@ RUN apt-get update && apt-get install -y \
         libxml2-dev \
 	sqlite3 \
 	libsqlite3-dev \
+	libbz2-dev \
         && rm -rf /var/lib/apt/lists/*
 
 # https://doc.owncloud.org/server/latest/admin_manual/installation/source_installation.html
