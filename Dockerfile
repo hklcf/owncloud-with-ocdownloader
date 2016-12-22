@@ -1,4 +1,4 @@
-FROM php:7-apache
+FROM php:5.6-apache
 
 RUN apt-get update && apt-get install -y \
         aria2 \
@@ -38,7 +38,7 @@ RUN { \
 	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
 
 # PECL extensions
-RUN pecl install APCu-4.0.10 redis memcached \
+RUN pecl install APCu-5.1.7 redis memcached \
 	&& docker-php-ext-enable apcu redis memcached
 
 RUN a2enmod rewrite
