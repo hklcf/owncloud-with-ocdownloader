@@ -1,4 +1,4 @@
-FROM php:5.6-apache
+FROM php:7-apache
 
 RUN apt-get update && apt-get install -y \
         aria2 \
@@ -17,9 +17,9 @@ RUN apt-get update && apt-get install -y \
         libxml2-dev \
         && rm -rf /var/lib/apt/lists/*
 
-# https://doc.owncloud.org/server/8.1/admin_manual/installation/source_installation.html#prerequisites
+# https://doc.owncloud.org/server/latest/admin_manual/installation/source_installation.html
 RUN docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
-	&& docker-php-ext-install gd exif intl mbstring mcrypt mysql opcache pdo_mysql pdo_pgsql pgsql zip
+	&& docker-php-ext-install ctype dom iconv json libxml posix simplexml xmlwriter zip zlib sqlite pdo_mysql pgsql curl fileinfo bz2 intl mcrypt openssl exif mbstring opcache
 
 # set recommended PHP.ini settings
 # see https://secure.php.net/manual/en/opcache.installation.php
@@ -38,7 +38,7 @@ RUN pecl install APCu-4.0.10 redis memcached \
 
 RUN a2enmod rewrite
 
-ENV OWNCLOUD_VERSION 9.1.0
+ENV OWNCLOUD_VERSION 9.1.3
 
 RUN curl -fsSL -o owncloud.tar.bz2 \
 		"https://download.owncloud.org/community/owncloud-${OWNCLOUD_VERSION}.tar.bz2" \
