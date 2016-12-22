@@ -1,8 +1,7 @@
-FROM php:7-apache
+FROM php:5.6-apache
 
 RUN apt-get update && apt-get install -y \
         aria2 \
-        curl \
         unzip \
         python \
         bzip2 \
@@ -15,12 +14,17 @@ RUN apt-get update && apt-get install -y \
         libpng12-dev \
         libpq-dev \
         libxml2-dev \
+	sqlite3 \
+	libsqlite3-dev \
+	libbz2-dev \
         && rm -rf /var/lib/apt/lists/*
 
 # https://doc.owncloud.org/server/latest/admin_manual/installation/source_installation.html
 RUN docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
-	&& docker-php-ext-install gd exif intl mbstring mcrypt mysql opcache pdo_mysql pdo_pgsql pgsql zip pcntl
-#	&& docker-php-ext-install ctype gd dom iconv json libxml posix simplexml xmlwriter zip zlib sqlite pdo_mysql pgsql curl fileinfo bz2 intl mcrypt openssl exif mbstring opcache && docker-php-ext-install ctype dom iconv json libxml posix simplexml xmlwriter zip zlib sqlite pdo_mysql pgsql curl fileinfo bz2 intl mcrypt openssl exif mbstring opcache pcntl
+	&& docker-php-ext-install gd zip pdo_mysql pgsql bz2 intl mcrypt exif opcache
+#	&& docker-php-ext-install ctype dom iconv json libxml posix simplexml xmlwriter zip zlib pdo_sqlite pdo_mysql pgsql curl fileinfo bz2 intl mcrypt openssl exif mbstring opcache pcntl
+#	&& docker-php-ext-install gd exif intl mbstring mcrypt mysql opcache pdo_mysql pdo_pgsql pgsql zip pcntl
+#	&& docker-php-ext-install ctype gd dom iconv json libxml posix simplexml xmlwriter zip zlib pdo_sqlite pdo_mysql pgsql curl fileinfo bz2 intl mcrypt openssl exif mbstring opcache && docker-php-ext-install ctype dom iconv json libxml posix simplexml xmlwriter zip zlib sqlite pdo_mysql pgsql curl fileinfo bz2 intl mcrypt openssl exif mbstring opcache pcntl
 
 # set recommended PHP.ini settings
 # see https://secure.php.net/manual/en/opcache.installation.php
@@ -34,7 +38,7 @@ RUN { \
 	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
 
 # PECL extensions
-RUN pecl install APCu-4.0.10 redis memcached \
+RUN pecl install APCu-4.0.11 redis memcached \
 	&& docker-php-ext-enable apcu redis memcached
 
 RUN a2enmod rewrite
