@@ -38,8 +38,11 @@ RUN { \
 	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
 
 # PECL extensions
-RUN pecl install APCu-4.0.11 redis memcached \
-	&& docker-php-ext-enable apcu redis memcached
+RUN set -ex \
+	&& pecl install APCu-5.1.8 \
+	&& pecl install memcached-3.0.3 \
+	&& pecl install redis-3.1.2 \
+	&& docker-php-ext-enable apcu memcached redis
 
 RUN a2enmod rewrite
 
