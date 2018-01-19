@@ -19,12 +19,12 @@ RUN apt-get update && apt-get install -y \
 	libbz2-dev \
         && rm -rf /var/lib/apt/lists/*
 
-# https://doc.owncloud.org/server/latest/admin_manual/installation/source_installation.html
-RUN docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
-	&& docker-php-ext-install gd zip pdo_mysql pgsql bz2 intl mcrypt exif opcache
-#	&& docker-php-ext-install ctype dom iconv json libxml posix simplexml xmlwriter zip zlib pdo_sqlite pdo_mysql pgsql curl fileinfo bz2 intl mcrypt openssl exif mbstring opcache pcntl
-#	&& docker-php-ext-install gd exif intl mbstring mcrypt mysql opcache pdo_mysql pdo_pgsql pgsql zip pcntl
-#	&& docker-php-ext-install ctype gd dom iconv json libxml posix simplexml xmlwriter zip zlib pdo_sqlite pdo_mysql pgsql curl fileinfo bz2 intl mcrypt openssl exif mbstring opcache && docker-php-ext-install ctype dom iconv json libxml posix simplexml xmlwriter zip zlib sqlite pdo_mysql pgsql curl fileinfo bz2 intl mcrypt openssl exif mbstring opcache pcntl
+# https://doc.owncloud.org/server/8.1/admin_manual/installation/source_installation.html#prerequisites
+RUN set -ex; \
+	docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr; \
+	debMultiarch="$(dpkg-architecture --query DEB_BUILD_MULTIARCH)"; \
+	docker-php-ext-configure ldap --with-libdir="lib/$debMultiarch"; \
+	docker-php-ext-install exif gd intl ldap mbstring mcrypt opcache pdo pdo_mysql pdo_pgsql pgsql zip
 
 # set recommended PHP.ini settings
 # see https://secure.php.net/manual/en/opcache.installation.php
@@ -36,6 +36,7 @@ RUN { \
 		echo 'opcache.fast_shutdown=1'; \
 		echo 'opcache.enable_cli=1'; \
 	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
+RUN a2enmod rewrite
 
 # PECL extensions
 RUN set -ex \
@@ -43,8 +44,6 @@ RUN set -ex \
 	&& pecl install memcached-3.0.3 \
 	&& pecl install redis-3.1.2 \
 	&& docker-php-ext-enable apcu memcached redis
-
-RUN a2enmod rewrite
 
 ENV OWNCLOUD_VERSION 9.1.4
 
